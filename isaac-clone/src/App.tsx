@@ -34,6 +34,42 @@ const App: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       setKeysPressed(prev => new Set(prev).add(e.key.toLowerCase()));
 
+      // Developer Mode Cheats
+      // Press 1 to kill all enemies
+      if (e.key === '1') {
+        e.preventDefault();
+        setGameState(prev => {
+          if (!prev) return prev;
+          // Kill all enemies by setting their health to 0
+          return {
+            ...prev,
+            enemies: prev.enemies.map(enemy => ({
+              ...enemy,
+              currentHealth: 0
+            }))
+          };
+        });
+      }
+
+      // Press 2 to enable god mode (one-shot damage and invincibility)
+      if (e.key === '2') {
+        e.preventDefault();
+        setGameState(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            player: {
+              ...prev.player,
+              stats: {
+                ...prev.player.stats,
+                damage: 9999  // One-shot damage
+              },
+              lastHitTime: Number.MAX_SAFE_INTEGER  // Permanent invincibility
+            }
+          };
+        });
+      }
+
       // Pause/Restart
       if (e.key === ' ') {
         e.preventDefault();
@@ -550,6 +586,14 @@ const App: React.FC = () => {
           <div className="control-item">
             <span className="key">R</span>
             <span>Restart</span>
+          </div>
+          <div className="control-item" style={{ color: '#ff6b6b' }}>
+            <span className="key">1</span>
+            <span>Kill All Enemies</span>
+          </div>
+          <div className="control-item" style={{ color: '#ff6b6b' }}>
+            <span className="key">2</span>
+            <span>God Mode</span>
           </div>
         </div>
       </div>
